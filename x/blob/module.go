@@ -5,12 +5,8 @@ import (
 	"fmt"
 
 	"github.com/gorilla/mux"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/spf13/cobra"
-
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/celestiaorg/celestia-app/x/blob/client/cli"
 	"github.com/celestiaorg/celestia-app/x/blob/keeper"
 	"github.com/celestiaorg/celestia-app/x/blob/types"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -72,20 +68,6 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, _ client.TxEncodingCo
 
 // RegisterRESTRoutes registers the capability module's REST service handlers.
 func (AppModuleBasic) RegisterRESTRoutes(_ client.Context, _ *mux.Router) {
-}
-
-// RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the module.
-func (AppModuleBasic) RegisterGRPCGatewayRoutes(_ client.Context, _ *runtime.ServeMux) {
-}
-
-// GetTxCmd returns the capability module's root tx command.
-func (a AppModuleBasic) GetTxCmd() *cobra.Command {
-	return cli.GetTxCmd()
-}
-
-// GetQueryCmd returns the capability module's root query command.
-func (AppModuleBasic) GetQueryCmd() *cobra.Command {
-	return cli.GetQueryCmd()
 }
 
 // ----------------------------------------------------------------------------

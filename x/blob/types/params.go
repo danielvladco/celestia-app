@@ -6,7 +6,7 @@ import (
 	"github.com/celestiaorg/celestia-app/pkg/appconsts"
 	"github.com/celestiaorg/celestia-app/pkg/shares"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 var _ paramtypes.ParamSet = (*Params)(nil)

@@ -5,11 +5,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/celestiaorg/celestia-app/pkg/appconsts"
-	qgbcmd "github.com/celestiaorg/celestia-app/x/qgb/client"
-
 	"github.com/celestiaorg/celestia-app/app"
 	"github.com/celestiaorg/celestia-app/app/encoding"
+	"github.com/celestiaorg/celestia-app/pkg/appconsts"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/simapp/simd/cmd"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
@@ -138,7 +136,7 @@ func initRootCmd(rootCmd *cobra.Command, encodingConfig encoding.Config) {
 		queryCommand(),
 		txCommand(),
 		keys.Commands(app.DefaultNodeHome),
-		qgbcmd.VerifyCmd(),
+		//qgbcmd.VerifyCmd(),
 	)
 }
 

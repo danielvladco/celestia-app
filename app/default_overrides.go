@@ -15,7 +15,6 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
-	distrclient "github.com/cosmos/cosmos-sdk/x/distribution/client"
 	"github.com/cosmos/cosmos-sdk/x/gov"
 	govclient "github.com/cosmos/cosmos-sdk/x/gov/client"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
@@ -171,7 +170,7 @@ func (govModule) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
 func getLegacyProposalHandlers() (result []govclient.ProposalHandler) {
 	result = append(result,
 		paramsclient.ProposalHandler,
-		distrclient.ProposalHandler,
+		//distrclient.ProposalHandler,
 		ibcclientclient.UpdateClientProposalHandler,
 		ibcclientclient.UpgradeProposalHandler,
 	)

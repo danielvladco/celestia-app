@@ -40,16 +40,12 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	crisiskeeper "github.com/cosmos/cosmos-sdk/x/crisis/keeper"
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
-	distr "github.com/cosmos/cosmos-sdk/x/distribution"
-	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
-	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	"github.com/cosmos/cosmos-sdk/x/evidence"
 	evidencekeeper "github.com/cosmos/cosmos-sdk/x/evidence/keeper"
 	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
 	"github.com/cosmos/cosmos-sdk/x/feegrant"
 	feegrantkeeper "github.com/cosmos/cosmos-sdk/x/feegrant/keeper"
 	feegrantmodule "github.com/cosmos/cosmos-sdk/x/feegrant/module"
-	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	"github.com/cosmos/cosmos-sdk/x/gov"
 	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
@@ -94,9 +90,6 @@ import (
 	"github.com/celestiaorg/celestia-app/x/tokenfilter"
 	appupgrade "github.com/celestiaorg/celestia-app/x/upgrade"
 
-	qgbmodule "github.com/celestiaorg/celestia-app/x/qgb"
-	qgbmodulekeeper "github.com/celestiaorg/celestia-app/x/qgb/keeper"
-	qgbmoduletypes "github.com/celestiaorg/celestia-app/x/qgb/types"
 	ibctestingtypes "github.com/cosmos/ibc-go/v6/testing/types"
 )
 
@@ -138,12 +131,12 @@ var (
 	// and genesis verification.
 	ModuleBasics = module.NewBasicManager(
 		auth.AppModuleBasic{},
-		genutil.AppModuleBasic{},
+		//genutil.AppModuleBasic{}, TODO
 		bankModule{},
 		capability.AppModuleBasic{},
-		stakingModule{},
+		//stakingModule{},
 		mintModule{},
-		distr.AppModuleBasic{},
+		//distr.AppModuleBasic{},
 		newGovModule(),
 		params.AppModuleBasic{},
 		crisisModule{},
@@ -155,7 +148,7 @@ var (
 		transfer.AppModuleBasic{},
 		vesting.AppModuleBasic{},
 		blobmodule.AppModuleBasic{},
-		qgbmodule.AppModuleBasic{},
+		//qgbmodule.AppModuleBasic{}, TODO light
 	)
 
 	// ModuleEncodingRegisters keeps track of all the module methods needed to
@@ -164,8 +157,8 @@ var (
 
 	// module account permissions
 	maccPerms = map[string][]string{
-		authtypes.FeeCollectorName:     nil,
-		distrtypes.ModuleName:          nil,
+		authtypes.FeeCollectorName: nil,
+		//distrtypes.ModuleName:          nil,
 		govtypes.ModuleName:            {authtypes.Burner},
 		minttypes.ModuleName:           {authtypes.Minter},
 		stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
@@ -216,22 +209,22 @@ type App struct {
 	StakingKeeper    stakingkeeper.Keeper
 	SlashingKeeper   slashingkeeper.Keeper
 	MintKeeper       mintkeeper.Keeper
-	DistrKeeper      distrkeeper.Keeper
-	GovKeeper        govkeeper.Keeper
-	CrisisKeeper     crisiskeeper.Keeper
-	UpgradeKeeper    sdkupgradekeeper.Keeper
-	ParamsKeeper     paramskeeper.Keeper
-	IBCKeeper        *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
-	EvidenceKeeper   evidencekeeper.Keeper
-	TransferKeeper   ibctransferkeeper.Keeper
-	FeeGrantKeeper   feegrantkeeper.Keeper
+	//DistrKeeper      distrkeeper.Keeper
+	GovKeeper      govkeeper.Keeper
+	CrisisKeeper   crisiskeeper.Keeper
+	UpgradeKeeper  sdkupgradekeeper.Keeper
+	ParamsKeeper   paramskeeper.Keeper
+	IBCKeeper      *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
+	EvidenceKeeper evidencekeeper.Keeper
+	TransferKeeper ibctransferkeeper.Keeper
+	FeeGrantKeeper feegrantkeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
 
 	BlobKeeper blobmodulekeeper.Keeper
-	QgbKeeper  qgbmodulekeeper.Keeper
+	//QgbKeeper  qgbmodulekeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -261,11 +254,13 @@ func New(
 
 	keys := sdk.NewKVStoreKeys(
 		authtypes.StoreKey, authzkeeper.StoreKey, banktypes.StoreKey, stakingtypes.StoreKey,
-		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
+		minttypes.StoreKey,
+		//distrtypes.StoreKey,
+		slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, sdkupgradetypes.StoreKey, feegrant.StoreKey,
 		evidencetypes.StoreKey, capabilitytypes.StoreKey,
 		blobmoduletypes.StoreKey,
-		qgbmoduletypes.StoreKey,
+		//qgbmoduletypes.StoreKey,
 		ibctransfertypes.StoreKey,
 		ibchost.StoreKey,
 	)
@@ -316,10 +311,10 @@ func New(
 		app.BankKeeper,
 		authtypes.FeeCollectorName,
 	)
-	app.DistrKeeper = distrkeeper.NewKeeper(
-		appCodec, keys[distrtypes.StoreKey], app.GetSubspace(distrtypes.ModuleName), app.AccountKeeper, app.BankKeeper,
-		&stakingKeeper, authtypes.FeeCollectorName,
-	)
+	//app.DistrKeeper = distrkeeper.NewKeeper(
+	//	appCodec, keys[distrtypes.StoreKey], app.GetSubspace(distrtypes.ModuleName), app.AccountKeeper, app.BankKeeper,
+	//	&stakingKeeper, authtypes.FeeCollectorName,
+	//)
 	app.SlashingKeeper = slashingkeeper.NewKeeper(
 		appCodec, keys[slashingtypes.StoreKey], &stakingKeeper, app.GetSubspace(slashingtypes.ModuleName),
 	)
@@ -330,22 +325,22 @@ func New(
 	app.FeeGrantKeeper = feegrantkeeper.NewKeeper(appCodec, keys[feegrant.StoreKey], app.AccountKeeper)
 	app.UpgradeKeeper = sdkupgradekeeper.NewKeeper(skipUpgradeHeights, keys[sdkupgradetypes.StoreKey], appCodec, homePath, app.BaseApp, authtypes.NewModuleAddress(govtypes.ModuleName).String())
 
-	app.QgbKeeper = *qgbmodulekeeper.NewKeeper(
-		appCodec,
-		keys[qgbmoduletypes.StoreKey],
-		app.GetSubspace(qgbmoduletypes.ModuleName),
-		&stakingKeeper,
-	)
-	qgbmod := qgbmodule.NewAppModule(appCodec, app.QgbKeeper)
+	//app.QgbKeeper = *qgbmodulekeeper.NewKeeper(
+	//	appCodec,
+	//	keys[qgbmoduletypes.StoreKey],
+	//	app.GetSubspace(qgbmoduletypes.ModuleName),
+	//	&stakingKeeper,
+	//)
+	//qgbmod := qgbmodule.NewAppModule(appCodec, app.QgbKeeper)
 
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
-	app.StakingKeeper = *stakingKeeper.SetHooks(
-		stakingtypes.NewMultiStakingHooks(app.DistrKeeper.Hooks(),
-			app.SlashingKeeper.Hooks(),
-			app.QgbKeeper.Hooks(),
-		),
-	)
+	//app.StakingKeeper = *stakingKeeper.SetHooks(
+	//	stakingtypes.NewMultiStakingHooks(app.DistrKeeper.Hooks(),
+	//		app.SlashingKeeper.Hooks(),
+	//		//app.QgbKeeper.Hooks(),
+	//	),
+	//)
 
 	// ... other modules keepers
 
@@ -359,7 +354,7 @@ func New(
 	// register the proposal types
 	govRouter := oldgovtypes.NewRouter()
 	govRouter.AddRoute(paramproposal.RouterKey, paramBlockList.GovHandler(app.ParamsKeeper)).
-		AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
+		//AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
 		AddRoute(ibcclienttypes.RouterKey, NewClientProposalHandler(app.IBCKeeper.ClientKeeper))
 
 	// Create Transfer Keepers
@@ -415,10 +410,10 @@ func New(
 	// must be passed by reference here.
 
 	app.mm = module.NewManager(
-		genutil.NewAppModule(
-			app.AccountKeeper, app.StakingKeeper, app.BaseApp.DeliverTx,
-			encodingConfig.TxConfig,
-		),
+		//genutil.NewAppModule(
+		//	app.AccountKeeper, app.StakingKeeper, app.BaseApp.DeliverTx,
+		//	encodingConfig.TxConfig,
+		//),
 		auth.NewAppModule(appCodec, app.AccountKeeper, nil),
 		vesting.NewAppModule(app.AccountKeeper, app.BankKeeper),
 		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper),
@@ -428,7 +423,7 @@ func New(
 		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper),
 		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
-		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
+		//distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
 		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
@@ -436,7 +431,7 @@ func New(
 		params.NewAppModule(app.ParamsKeeper),
 		transferModule,
 		blobmod,
-		qgbmod,
+		//qgbmod, TODO
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -446,7 +441,7 @@ func New(
 	app.mm.SetOrderBeginBlockers(
 		capabilitytypes.ModuleName,
 		minttypes.ModuleName,
-		distrtypes.ModuleName,
+		//distrtypes.ModuleName,
 		slashingtypes.ModuleName,
 		evidencetypes.ModuleName,
 		stakingtypes.ModuleName,
@@ -459,7 +454,7 @@ func New(
 		govtypes.ModuleName,
 		genutiltypes.ModuleName,
 		blobmoduletypes.ModuleName,
-		qgbmoduletypes.ModuleName,
+		//qgbmoduletypes.ModuleName,
 		paramstypes.ModuleName,
 		authz.ModuleName,
 		vestingtypes.ModuleName,
@@ -471,7 +466,7 @@ func New(
 		stakingtypes.ModuleName,
 		capabilitytypes.ModuleName,
 		minttypes.ModuleName,
-		distrtypes.ModuleName,
+		//distrtypes.ModuleName,
 		slashingtypes.ModuleName,
 		evidencetypes.ModuleName,
 		ibchost.ModuleName,
@@ -481,7 +476,7 @@ func New(
 		banktypes.ModuleName,
 		genutiltypes.ModuleName,
 		blobmoduletypes.ModuleName,
-		qgbmoduletypes.ModuleName,
+		//qgbmoduletypes.ModuleName,
 		paramstypes.ModuleName,
 		authz.ModuleName,
 		vestingtypes.ModuleName,
@@ -496,7 +491,7 @@ func New(
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
-		distrtypes.ModuleName,
+		//distrtypes.ModuleName,
 		stakingtypes.ModuleName,
 		slashingtypes.ModuleName,
 		govtypes.ModuleName,
@@ -507,7 +502,7 @@ func New(
 		evidencetypes.ModuleName,
 		ibctransfertypes.ModuleName,
 		blobmoduletypes.ModuleName,
-		qgbmoduletypes.ModuleName,
+		//qgbmoduletypes.ModuleName,
 		vestingtypes.ModuleName,
 		feegrant.ModuleName,
 		paramstypes.ModuleName,
@@ -741,14 +736,14 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(banktypes.ModuleName)
 	paramsKeeper.Subspace(stakingtypes.ModuleName)
 	paramsKeeper.Subspace(minttypes.ModuleName)
-	paramsKeeper.Subspace(distrtypes.ModuleName)
+	//paramsKeeper.Subspace(distrtypes.ModuleName)
 	paramsKeeper.Subspace(slashingtypes.ModuleName)
 	paramsKeeper.Subspace(govtypes.ModuleName).WithKeyTable(govv1beta2.ParamKeyTable())
 	paramsKeeper.Subspace(crisistypes.ModuleName)
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 	paramsKeeper.Subspace(ibchost.ModuleName)
 	paramsKeeper.Subspace(blobmoduletypes.ModuleName)
-	paramsKeeper.Subspace(qgbmoduletypes.ModuleName)
+	//paramsKeeper.Subspace(qgbmoduletypes.ModuleName)
 
 	return paramsKeeper
 }

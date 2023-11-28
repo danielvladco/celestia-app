@@ -72,30 +72,30 @@ func (app *App) prepForZeroHeightGenesis(ctx sdk.Context, jailAllowedAddrs []str
 
 	// withdraw all validator commission
 	app.StakingKeeper.IterateValidators(ctx, func(_ int64, val stakingtypes.ValidatorI) (stop bool) {
-		_, _ = app.DistrKeeper.WithdrawValidatorCommission(ctx, val.GetOperator())
+		//_, _ = app.DistrKeeper.WithdrawValidatorCommission(ctx, val.GetOperator())
 		return false
 	})
 
 	// withdraw all delegator rewards
-	dels := app.StakingKeeper.GetAllDelegations(ctx)
-	for _, delegation := range dels {
-		valAddr, err := sdk.ValAddressFromBech32(delegation.ValidatorAddress)
-		if err != nil {
-			panic(err)
-		}
-
-		delAddr, err := sdk.AccAddressFromBech32(delegation.DelegatorAddress)
-		if err != nil {
-			panic(err)
-		}
-		_, _ = app.DistrKeeper.WithdrawDelegationRewards(ctx, delAddr, valAddr)
-	}
+	//dels := app.StakingKeeper.GetAllDelegations(ctx)
+	//for _, delegation := range dels {
+	//valAddr, err := sdk.ValAddressFromBech32(delegation.ValidatorAddress)
+	//if err != nil {
+	//	panic(err)
+	//}
+	//
+	//delAddr, err := sdk.AccAddressFromBech32(delegation.DelegatorAddress)
+	//if err != nil {
+	//	panic(err)
+	//}
+	//_, _ = app.DistrKeeper.WithdrawDelegationRewards(ctx, delAddr, valAddr)
+	//}
 
 	// clear validator slash events
-	app.DistrKeeper.DeleteAllValidatorSlashEvents(ctx)
+	//app.DistrKeeper.DeleteAllValidatorSlashEvents(ctx)
 
 	// clear validator historical rewards
-	app.DistrKeeper.DeleteAllValidatorHistoricalRewards(ctx)
+	//app.DistrKeeper.DeleteAllValidatorHistoricalRewards(ctx)
 
 	// set context height to zero
 	height := ctx.BlockHeight()
@@ -104,30 +104,30 @@ func (app *App) prepForZeroHeightGenesis(ctx sdk.Context, jailAllowedAddrs []str
 	// reinitialize all validators
 	app.StakingKeeper.IterateValidators(ctx, func(_ int64, val stakingtypes.ValidatorI) (stop bool) {
 		// donate any unwithdrawn outstanding reward fraction tokens to the community pool
-		scraps := app.DistrKeeper.GetValidatorOutstandingRewardsCoins(ctx, val.GetOperator())
-		feePool := app.DistrKeeper.GetFeePool(ctx)
-		feePool.CommunityPool = feePool.CommunityPool.Add(scraps...)
-		app.DistrKeeper.SetFeePool(ctx, feePool)
-
-		if err := app.DistrKeeper.Hooks().AfterValidatorCreated(ctx, val.GetOperator()); err != nil {
-			panic(err)
-		}
+		//scraps := app.DistrKeeper.GetValidatorOutstandingRewardsCoins(ctx, val.GetOperator())
+		//feePool := app.DistrKeeper.GetFeePool(ctx)
+		//feePool.CommunityPool = feePool.CommunityPool.Add(scraps...)
+		//app.DistrKeeper.SetFeePool(ctx, feePool)
+		//
+		//if err := app.DistrKeeper.Hooks().AfterValidatorCreated(ctx, val.GetOperator()); err != nil {
+		//	panic(err)
+		//}
 		return false
 	})
 
 	// reinitialize all delegations
-	for _, del := range dels {
-		valAddr, err := sdk.ValAddressFromBech32(del.ValidatorAddress)
-		if err != nil {
-			panic(err)
-		}
-		delAddr, err := sdk.AccAddressFromBech32(del.DelegatorAddress)
-		if err != nil {
-			panic(err)
-		}
-		_ = app.DistrKeeper.Hooks().BeforeDelegationCreated(ctx, delAddr, valAddr)
-		_ = app.DistrKeeper.Hooks().AfterDelegationModified(ctx, delAddr, valAddr)
-	}
+	//for _, del := range dels {
+	//valAddr, err := sdk.ValAddressFromBech32(del.ValidatorAddress)
+	//if err != nil {
+	//	panic(err)
+	//}
+	//delAddr, err := sdk.AccAddressFromBech32(del.DelegatorAddress)
+	//if err != nil {
+	//	panic(err)
+	//}
+	//_ = app.DistrKeeper.Hooks().BeforeDelegationCreated(ctx, delAddr, valAddr)
+	//_ = app.DistrKeeper.Hooks().AfterDelegationModified(ctx, delAddr, valAddr)
+	//}
 
 	// reset context height
 	ctx = ctx.WithBlockHeight(height)

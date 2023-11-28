@@ -1,15 +1,11 @@
 package mint
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/celestiaorg/celestia-app/x/mint/client/cli"
 	"github.com/celestiaorg/celestia-app/x/mint/keeper"
 	"github.com/celestiaorg/celestia-app/x/mint/simulation"
 	"github.com/celestiaorg/celestia-app/x/mint/types"
@@ -58,21 +54,6 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, _ client.TxEncodingCo
 	}
 
 	return types.ValidateGenesis(data)
-}
-
-// RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the mint module.
-func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
-	if err := types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx)); err != nil {
-		panic(err)
-	}
-}
-
-// GetTxCmd returns no root tx command for the mint module.
-func (AppModuleBasic) GetTxCmd() *cobra.Command { return nil }
-
-// GetQueryCmd returns the root query command for the mint module.
-func (AppModuleBasic) GetQueryCmd() *cobra.Command {
-	return cli.GetQueryCmd()
 }
 
 // AppModule implements an application module for the mint module.

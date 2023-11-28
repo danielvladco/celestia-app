@@ -27,7 +27,6 @@ import (
 	"github.com/celestiaorg/celestia-app/app"
 	"github.com/celestiaorg/celestia-app/app/encoding"
 	"github.com/celestiaorg/celestia-app/test/util/testfactory"
-	qgbtypes "github.com/celestiaorg/celestia-app/x/qgb/types"
 )
 
 // NewCometNode creates a ready to use comet node that operates a single
@@ -136,10 +135,10 @@ func DefaultGenesisState(fundedAccounts ...string) (map[string]json.RawMessage, 
 	state[banktypes.ModuleName] = encCfg.Codec.MustMarshalJSON(&bankGenState)
 
 	// use the minimum data commitment window (100)
-	var qgbGenState qgbtypes.GenesisState
-	encCfg.Codec.MustUnmarshalJSON(state[qgbtypes.ModuleName], &qgbGenState)
-	qgbGenState.Params.DataCommitmentWindow = qgbtypes.MinimumDataCommitmentWindow
-	state[qgbtypes.ModuleName] = encCfg.Codec.MustMarshalJSON(&qgbGenState)
+	//var qgbGenState qgbtypes.GenesisState
+	//encCfg.Codec.MustUnmarshalJSON(state[qgbtypes.ModuleName], &qgbGenState)
+	//qgbGenState.Params.DataCommitmentWindow = qgbtypes.MinimumDataCommitmentWindow
+	//state[qgbtypes.ModuleName] = encCfg.Codec.MustMarshalJSON(&qgbGenState)
 
 	return state, kr, nil
 }

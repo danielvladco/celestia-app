@@ -176,7 +176,7 @@ func init() {
 		var err error
 		userHomeDir, err = os.UserHomeDir()
 		if err != nil {
-			panic(err)
+			log.NewTMLogger(os.Stderr).Error("unable to get home dir", "err", err)
 		}
 	}
 
